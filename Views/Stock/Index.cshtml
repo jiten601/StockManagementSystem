@@ -1,0 +1,272 @@
+@model IEnumerable<StockManagementSystem.Models.StockItem>
+@{
+    ViewData["Title"] = "Stock Items";
+    var currentCategory = ViewData["CurrentCategory"]?.ToString();
+    var currentFilter = ViewData["CurrentFilter"]?.ToString();
+    var nameSortParm = ViewData["NameSortParm"]?.ToString();
+    var dateSortParm = ViewData["DateSortParm"]?.ToString();
+    var quantitySortParm = ViewData["QuantitySortParm"]?.ToString();
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-box me-2"></i>Stock Items
+                </h1>
+                <p class="text-muted mb-0">Manage your inventory items</p>
+            </div>
+            <div class="d-flex gap-2">
+                @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                {
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Add New Item
+                    </a>
+                }
+                <button class="btn btn-outline-secondary" onclick="exportToCSV()">
+                    <i class="fas fa-download me-2"></i>Export
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label"><i class="fas fa-search me-2"></i>Search</label>
+                <input type="text" name="searchTerm" class="form-control" value="@currentFilter" placeholder="Search items, suppliers, or categories..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"><i class="fas fa-tags me-2"></i>Category</label>
+                <select name="categoryId" class="form-select">
+                    <option value="">All Categories</option>
+                    @if (ViewBag.Categories is IEnumerable<StockManagementSystem.Models.Category> categories)
+                    {
+                        foreach (var category in categories)
+                        {
+                            <option value="@category.Id" selected="@(currentCategory == category.Id.ToString())">@category.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"><i class="fas fa-sort me-2"></i>Sort By</label>
+                <select name="sortOrder" class="form-select">
+                    <option value="">Name (A-Z)</option>
+                    <option value="name_desc" selected="@(nameSortParm == "name_desc")">Name (Z-A)</option>
+                    <option value="Date" selected="@(dateSortParm == "Date")">Date (Oldest)</option>
+                    <option value="date_desc" selected="@(dateSortParm == "date_desc")">Date (Newest)</option>
+                    <option value="Quantity" selected="@(quantitySortParm == "Quantity")">Quantity (Low-High)</option>
+                    <option value="quantity_desc" selected="@(quantitySortParm == "quantity_desc")">Quantity (High-Low)</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-2"></i>Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body d-flex justify-content-between">
+                <div>
+                    <h6>Total Items</h6>
+                    <h3>@ViewBag.TotalItems</h3>
+                </div>
+                <i class="fas fa-box fa-2x opacity-75 align-self-center"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body d-flex justify-content-between">
+                <div>
+                    <h6>In Stock</h6>
+                    <h3>@Model.Count(i => i.Quantity > 0)</h3>
+                </div>
+                <i class="fas fa-check-circle fa-2x opacity-75 align-self-center"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body d-flex justify-content-between">
+                <div>
+                    <h6>Low Stock</h6>
+                    <h3>@Model.Count(i => i.Quantity > 0 && i.Quantity < 5)</h3>
+                </div>
+                <i class="fas fa-exclamation-triangle fa-2x opacity-75 align-self-center"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body d-flex justify-content-between">
+                <div>
+                    <h6>Out of Stock</h6>
+                    <h3>@Model.Count(i => i.Quantity == 0)</h3>
+                </div>
+                <i class="fas fa-times-circle fa-2x opacity-75 align-self-center"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stock Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Stock Items List</h5>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Item Details</th>
+                            <th>Category</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Supplier</th>
+                            <th>Last Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var quantityClass = item.Quantity == 0 ? "bg-danger" :
+                            item.Quantity < 5 ? "bg-warning" : "bg-success";
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-box"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold">@item.Name</div>
+                                            <small class="text-muted">@item.Description</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-secondary">@item.Category?.Name</span></td>
+                                <td><span class="badge @quantityClass">@item.Quantity</span></td>
+                                <td><span class="fw-semibold">$@item.Price.ToString("N2")</span></td>
+                                <td><small class="text-muted">@item.Supplier</small></td>
+                                <td>
+                                    <small class="text-muted">
+                                        @(item.UpdatedAt.ToString("MMM dd, yyyy") ?? item.CreatedAt.ToString("MMM dd, yyyy"))
+                                    </small>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="View"><i class="fas fa-eye"></i></a>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning" title="Edit"><i class="fas fa-edit"></i></a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete(@item.Id, '@item.Name')" title="Delete"><i class="fas fa-trash"></i></button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-box fa-4x text-muted mb-3"></i>
+                <h5 class="text-muted">No stock items found</h5>
+                <p class="text-muted">Start by adding your first stock item.</p>
+                @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                {
+                    <a asp-action="Create" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Add First Item</a>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Pagination -->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav class="mt-4" aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, searchTerm = currentFilter, categoryId = currentCategory, sortOrder = nameSortParm })">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = i, searchTerm = currentFilter, categoryId = currentCategory, sortOrder = nameSortParm })">@i</a>
+                </li>
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, searchTerm = currentFilter, categoryId = currentCategory, sortOrder = nameSortParm })">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle text-danger me-2"></i>Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="itemName"></strong>?</p>
+                <p class="text-muted small">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(id, name) {
+            document.getElementById('itemName').textContent = name;
+            document.getElementById('deleteForm').action = `/Stock/Delete/${id}`;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+
+        function exportToCSV() {
+            // Future CSV export logic can go here
+            alert('Export to CSV not yet implemented.');
+        }
+    </script>
+}

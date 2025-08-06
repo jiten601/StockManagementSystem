@@ -1,0 +1,236 @@
+@model IEnumerable<StockManagementSystem.Models.ActivityLog>
+@{
+    ViewData["Title"] = "Activity Logs";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-history me-2"></i>Activity Logs
+                </h1>
+                <p class="text-muted mb-0">System activity and user actions</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary" onclick="exportLogs()">
+                    <i class="fas fa-download me-2"></i>Export
+                </button>
+                <a asp-action="Index" class="btn btn-outline-primary">
+                    <i class="fas fa-tachometer-alt me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total Activities</h6>
+                        <h3 class="mb-0">@ViewBag.TotalActivities</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-history fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Today's Activities</h6>
+                        <h3 class="mb-0">@Model.Count(a => a.Timestamp.Date == DateTime.Today)</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-calendar-day fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Unique Users</h6>
+                        <h3 class="mb-0">@Model.Select(a => a.UserId).Distinct().Count()</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Current Page</h6>
+                        <h3 class="mb-0">@ViewBag.CurrentPage</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-file-alt fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Logs Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-list me-2"></i>Activity Timeline
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Entity</th>
+                            <th>Description</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var activity in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-semibold">@activity.Timestamp.ToString("MMM dd, yyyy")</span>
+                                        <small class="text-muted">@activity.Timestamp.ToString("HH:mm:ss")</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-primary text-white rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold">@activity.User?.FullName</div>
+                                            <small class="text-muted">@activity.User?.Email</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    @{
+                                        var actionClass = activity.Action switch
+                                        {
+                                            "Create" => "bg-success",
+                                            "Update" => "bg-warning",
+                                            "Delete" => "bg-danger",
+                                            "Login" => "bg-info",
+                                            "Logout" => "bg-secondary",
+                                            _ => "bg-primary"
+                                        };
+                                        var actionIcon = activity.Action switch
+                                        {
+                                            "Create" => "fa-plus",
+                                            "Update" => "fa-edit",
+                                            "Delete" => "fa-trash",
+                                            "Login" => "fa-sign-in-alt",
+                                            "Logout" => "fa-sign-out-alt",
+                                            _ => "fa-cog"
+                                        };
+                                    }
+                                    <span class="badge @actionClass">
+                                        <i class="fas @actionIcon me-1"></i>@activity.Action
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">@activity.EntityType</span>
+                                    @if (activity.EntityId.HasValue)
+                                    {
+                                        <br><small class="text-muted">ID: @activity.EntityId</small>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="text-muted">@activity.Description</span>
+                                </td>
+                                <td>
+                                    <small class="text-muted font-monospace">@activity.IpAddress</small>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-history fa-4x text-muted mb-3"></i>
+                <h5 class="text-muted">No activity logs found</h5>
+                <p class="text-muted">System activities will appear here as they occur.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Pagination -->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav aria-label="Activity logs pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("ActivityLogs", new { page = ViewBag.CurrentPage - 1 })">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            }
+            
+            @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("ActivityLogs", new { page = i })">@i</a>
+                </li>
+            }
+            
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("ActivityLogs", new { page = ViewBag.CurrentPage + 1 })">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+    
+    <div class="text-center mt-2">
+        <small class="text-muted">
+            Showing page @ViewBag.CurrentPage of @ViewBag.TotalPages 
+            (@ViewBag.TotalActivities total activities)
+        </small>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function exportLogs() {
+            // Implementation for exporting logs
+            alert('Export functionality will be implemented here');
+        }
+    </script>
+}

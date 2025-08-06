@@ -1,0 +1,125 @@
+@{
+    ViewData["Title"] = "Check User Roles";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-shield me-2"></i>
+                        User Role Information
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>User Information</h5>
+                            <p><strong>Name:</strong> @ViewBag.UserName</p>
+                            <p><strong>Email:</strong> @ViewBag.UserEmail</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Assigned Roles</h5>
+                            @if (ViewBag.UserRoles != null && ((IEnumerable<string>)ViewBag.UserRoles).Any())
+                            {
+                                <ul class="list-group">
+                                    @foreach (var role in (IEnumerable<string>)ViewBag.UserRoles)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            @role
+                                            <span class="badge bg-success rounded-pill">Active</span>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    No roles assigned to this user.
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    
+                    <hr />
+                    
+                    <div class="mt-4">
+                        <h5>Access Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Dashboard Access</h6>
+                                        @if (ViewBag.UserRoles != null && ((IEnumerable<string>)ViewBag.UserRoles).Contains("Admin"))
+                                        {
+                                            <span class="badge bg-success">✓ Allowed</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">✗ Denied (Admin role required)</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Stock Management</h6>
+                                        @if (ViewBag.UserRoles != null && ((IEnumerable<string>)ViewBag.UserRoles).Any(r => r == "Admin" || r == "Staff"))
+                                        {
+                                            <span class="badge bg-success">✓ Allowed</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">✗ Denied (Staff/Admin role required)</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success mt-3">
+                            <i class="fas fa-check-circle me-2"></i>
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger mt-3">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+                    
+                    <div class="mt-4">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                                <i class="fas fa-home me-2"></i>
+                                Go to Home
+                            </a>
+                            @if (ViewBag.UserRoles == null || !((IEnumerable<string>)ViewBag.UserRoles).Contains("Admin"))
+                            {
+                                <form asp-action="AssignAdminRole" method="post" style="display: inline;">
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="fas fa-user-shield me-2"></i>
+                                        Assign Admin Role
+                                    </button>
+                                </form>
+                            }
+                            <a href="@Url.Action("Index", "Dashboard")" class="btn btn-primary">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                Try Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

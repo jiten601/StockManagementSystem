@@ -1,0 +1,182 @@
+@model StockManagementSystem.Models.ViewModels.StockItemViewModel
+@{
+    ViewData["Title"] = "Edit Stock Item";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-edit me-2"></i>Edit Stock Item
+                </h1>
+                <p class="text-muted mb-0">Update inventory item information</p>
+            </div>
+            <div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-box me-2"></i>Item Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <span asp-validation-summary="ModelOnly"></span>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Name" class="form-label">
+                                <i class="fas fa-tag me-2"></i>Item Name *
+                            </label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter item name" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CategoryId" class="form-label">
+                                <i class="fas fa-tags me-2"></i>Category *
+                            </label>
+                            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                                <option value="">Select a category</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Quantity" class="form-label">
+                                <i class="fas fa-cubes me-2"></i>Quantity *
+                            </label>
+                            <input asp-for="Quantity" type="number" class="form-control" placeholder="Enter quantity" min="0" />
+                            <span asp-validation-for="Quantity" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Price" class="form-label">
+                                <i class="fas fa-dollar-sign me-2"></i>Price *
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input asp-for="Price" type="number" class="form-control" placeholder="0.00" min="0" step="0.01" />
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Supplier" class="form-label">
+                                <i class="fas fa-truck me-2"></i>Supplier *
+                            </label>
+                            <input asp-for="Supplier" class="form-control" placeholder="Enter supplier name" />
+                            <span asp-validation-for="Supplier" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="PurchaseDate" class="form-label">
+                                <i class="fas fa-calendar me-2"></i>Purchase Date *
+                            </label>
+                            <input asp-for="PurchaseDate" type="date" class="form-control" />
+                            <span asp-validation-for="PurchaseDate" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">
+                            <i class="fas fa-align-left me-2"></i>Description
+                        </label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter item description (optional)"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Location" class="form-label">
+                                <i class="fas fa-map-marker-alt me-2"></i>Storage Location
+                            </label>
+                            <input asp-for="Location" class="form-control" placeholder="Enter storage location" />
+                            <span asp-validation-for="Location" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="SKU" class="form-label">
+                                <i class="fas fa-barcode me-2"></i>SKU Code
+                            </label>
+                            <input asp-for="SKU" class="form-control" placeholder="Enter SKU code" />
+                            <span asp-validation-for="SKU" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="MinimumQuantity" class="form-label">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Minimum Stock Level
+                            </label>
+                            <input asp-for="MinimumQuantity" type="number" class="form-control" placeholder="5" min="0" />
+                            <small class="text-muted">Alert when stock falls below this level</small>
+                            <span asp-validation-for="MinimumQuantity" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ReorderPoint" class="form-label">
+                                <i class="fas fa-shopping-cart me-2"></i>Reorder Point
+                            </label>
+                            <input asp-for="ReorderPoint" type="number" class="form-control" placeholder="10" min="0" />
+                            <small class="text-muted">Quantity at which to reorder</small>
+                            <span asp-validation-for="ReorderPoint" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">
+                            <i class="fas fa-check-circle me-2"></i>Active Item
+                        </label>
+                        <small class="text-muted d-block">Inactive items won't appear in stock reports</small>
+                    </div>
+                    
+                    <hr />
+                    
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Update Item
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Format price input
+        document.getElementById('Price').addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            if (!isNaN(value)) {
+                this.value = value.toFixed(2);
+            }
+        });
+    </script>
+}

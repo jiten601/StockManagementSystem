@@ -1,0 +1,216 @@
+@model StockManagementSystem.Models.StockItem
+@{
+    ViewData["Title"] = "Stock Item Details";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-box me-2"></i>@Model.Name
+                </h1>
+                <p class="text-muted mb-0">Stock item details and information</p>
+            </div>
+            <div class="d-flex gap-2">
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                        <i class="fas fa-edit me-2"></i>Edit
+                    </a>
+                }
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Item Information -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Item Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Name</label>
+                        <p class="text-muted">@Model.Name</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Category</label>
+                        <p>
+                            <span class="badge bg-secondary">@Model.Category?.Name</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Quantity</label>
+                        <p>
+                            @{
+                                var quantityClass = Model.Quantity == 0 ? "bg-danger" : 
+                                                   Model.Quantity < 5 ? "bg-warning" : "bg-success";
+                            }
+                            <span class="badge @quantityClass fs-6">@Model.Quantity units</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Price</label>
+                        <p class="text-success fw-semibold fs-5">$@Model.Price.ToString("N2")</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Supplier</label>
+                        <p class="text-muted">@Model.Supplier</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Purchase Date</label>
+                        <p class="text-muted">@Model.PurchaseDate.ToString("MMM dd, yyyy")</p>
+                    </div>
+                </div>
+                
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Description</label>
+                        <p class="text-muted">@Model.Description</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional Details -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-cogs me-2"></i>Additional Details
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">SKU Code</label>
+                        <p class="text-muted">@(Model.SKU ?? "Not assigned")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Location</label>
+                        <p class="text-muted">@(Model.Location ?? "Not specified")</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Minimum Quantity</label>
+                        <p class="text-muted">@(Model.MinimumQuantity?.ToString() ?? "Not set")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Reorder Point</label>
+                        <p class="text-muted">@(Model.ReorderPoint?.ToString() ?? "Not set")</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Status</label>
+                        <p>
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check-circle me-1"></i>Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-times-circle me-1"></i>Inactive
+                                </span>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Total Value</label>
+                        <p class="text-success fw-semibold">$@((Model.Price * Model.Quantity).ToString("N2"))</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Audit Information -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Audit Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Created</label>
+                        <p class="text-muted">
+                            @Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+                            @if (Model.CreatedByUser != null)
+                            {
+                                <br><small>by @Model.CreatedByUser.FullName</small>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Last Updated</label>
+                        <p class="text-muted">
+                            @Model.UpdatedAt.ToString("MMM dd, yyyy HH:mm")
+                            @if (Model.UpdatedByUser != null)
+                            {
+                                <br><small>by @Model.UpdatedByUser.FullName</small>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Stock Status</label>
+                        <p>
+                            @if (Model.Quantity == 0)
+                            {
+                                <span class="badge bg-danger">Out of Stock</span>
+                            }
+                            else if (Model.MinimumQuantity.HasValue && Model.Quantity < Model.MinimumQuantity)
+                            {
+                                <span class="badge bg-warning">Low Stock</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">In Stock</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Reorder Needed</label>
+                        <p>
+                            @if (Model.ReorderPoint.HasValue && Model.Quantity <= Model.ReorderPoint)
+                            {
+                                <span class="badge bg-warning">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">No</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
