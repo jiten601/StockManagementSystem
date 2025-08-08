@@ -132,9 +132,6 @@ namespace StockManagementSystem.Controllers
                     Supplier = model.Supplier,
                     Description = model.Description,
                     Location = model.Location,
-                    SKU = model.SKU,
-                    MinimumQuantity = model.MinimumQuantity,
-                    ReorderPoint = model.ReorderPoint,
                     IsActive = model.IsActive,
                     CreatedBy = user!.Id
                 };
@@ -182,9 +179,6 @@ namespace StockManagementSystem.Controllers
                 Supplier = stockItem.Supplier,
                 Description = stockItem.Description,
                 Location = stockItem.Location,
-                SKU = stockItem.SKU,
-                MinimumQuantity = stockItem.MinimumQuantity,
-                ReorderPoint = stockItem.ReorderPoint,
                 IsActive = stockItem.IsActive
             };
 
@@ -228,9 +222,6 @@ namespace StockManagementSystem.Controllers
                 stockItem.Supplier = model.Supplier;
                 stockItem.Description = model.Description;
                 stockItem.Location = model.Location;
-                stockItem.SKU = model.SKU;
-                stockItem.MinimumQuantity = model.MinimumQuantity;
-                stockItem.ReorderPoint = model.ReorderPoint;
                 stockItem.IsActive = model.IsActive;
                 stockItem.UpdatedBy = user!.Id;
                 stockItem.UpdatedAt = DateTime.Now;

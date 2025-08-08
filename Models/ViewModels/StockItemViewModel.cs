@@ -38,15 +38,6 @@ namespace StockManagementSystem.Models.ViewModels
         [StringLength(100)]
         public string? Location { get; set; }
 
-        [StringLength(50)]
-        public string? SKU { get; set; }
-
-        [Range(0, int.MaxValue)]
-        public int? MinimumQuantity { get; set; }
-
-        [Range(0, int.MaxValue)]
-        public int? ReorderPoint { get; set; }
-
         public bool IsActive { get; set; } = true;
 
         // For display purposes

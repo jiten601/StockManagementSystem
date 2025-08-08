@@ -1,0 +1,151 @@
+@model StockManagementSystem.Models.ApplicationUser
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-user me-2"></i>User Details
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-12 text-center mb-3">
+                        <div class="avatar-lg bg-primary text-white rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3">
+                            <i class="fas fa-user fa-3x"></i>
+                        </div>
+                        <h4 class="mb-1">@Model.FullName</h4>
+                        <p class="text-muted mb-0">@Model.Email</p>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted mb-3">
+                            <i class="fas fa-info-circle me-2"></i>Basic Information
+                        </h6>
+                        <dl class="row">
+                            <dt class="col-sm-4">Full Name:</dt>
+                            <dd class="col-sm-8">@Model.FullName</dd>
+                            
+                            <dt class="col-sm-4">Email:</dt>
+                            <dd class="col-sm-8">@Model.Email</dd>
+                            
+                            <dt class="col-sm-4">Role:</dt>
+                            <dd class="col-sm-8">
+                                @{
+                                    var roleClass = Model.Role == "Admin" ? "bg-danger" : "bg-info";
+                                    var roleIcon = Model.Role == "Admin" ? "fa-user-shield" : "fa-user-tie";
+                                }
+                                <span class="badge @roleClass">
+                                    <i class="fas @roleIcon me-1"></i>@Model.Role
+                                </span>
+                            </dd>
+                            
+                            <dt class="col-sm-4">Status:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle me-1"></i>Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-times-circle me-1"></i>Inactive
+                                    </span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted mb-3">
+                            <i class="fas fa-clock me-2"></i>Account Information
+                        </h6>
+                        <dl class="row">
+                            <dt class="col-sm-4">Created:</dt>
+                            <dd class="col-sm-8">@Model.CreatedAt.ToString("MMM dd, yyyy 'at' HH:mm")</dd>
+                            
+                            <dt class="col-sm-4">Last Login:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.LastLoginAt != null)
+                                {
+                                    @Model.LastLoginAt?.ToString("MMM dd, yyyy 'at' HH:mm")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Never logged in</span>
+                                }
+                            </dd>
+                            
+                            <dt class="col-sm-4">Account Age:</dt>
+                            <dd class="col-sm-8">
+                                @{
+                                    var age = DateTime.Now - Model.CreatedAt;
+                                    var days = age.Days;
+                                    var months = days / 30;
+                                    var years = months / 12;
+                                    
+                                    if (years > 0)
+                                    {
+                                        <span>@years year@(years == 1 ? "" : "s")</span>
+                                    }
+                                    else if (months > 0)
+                                    {
+                                        <span>@months month@(months == 1 ? "" : "s")</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@days day@(days == 1 ? "" : "s")</span>
+                                    }
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                @if (ViewBag.Roles is IEnumerable<string> roles && roles.Any())
+                {
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-3">
+                                <i class="fas fa-shield-alt me-2"></i>User Roles
+                            </h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var role in roles)
+                                {
+                                    var loopRoleClass = role == "Admin" ? "bg-danger" : "bg-info";
+                                    var loopRoleIcon = role == "Admin" ? "fa-user-shield" : "fa-user-tie";
+                                    <span class="badge @loopRoleClass">
+                                        <i class="fas @loopRoleIcon me-1"></i>@role
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                    </a>
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">
+                            <i class="fas fa-edit me-2"></i>Edit User
+                        </a>
+                        @if (Model.Id != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && Model.Role != "Admin")
+                        {
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                                <i class="fas fa-trash me-2"></i>Delete User
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -46,10 +46,10 @@ namespace StockManagementSystem.Data
 
             // Seed default categories
             builder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Furniture", Description = "Office and home furniture", CreatedAt = DateTime.Now },
-                new Category { Id = 2, Name = "Electronics", Description = "Electronic devices and equipment", CreatedAt = DateTime.Now },
-                new Category { Id = 3, Name = "Goods", Description = "General goods and supplies", CreatedAt = DateTime.Now },
-                new Category { Id = 4, Name = "Technology", Description = "Technology and IT equipment", CreatedAt = DateTime.Now }
+                new Category { Id = 1, Name = "Furniture", Description = "Office and home furniture", CreatedAt = new DateTime(2024, 1, 1) },
+                new Category { Id = 2, Name = "Electronics", Description = "Electronic devices and equipment", CreatedAt = new DateTime(2024, 1, 1) },
+                new Category { Id = 3, Name = "Goods", Description = "General goods and supplies", CreatedAt = new DateTime(2024, 1, 1) },
+                new Category { Id = 4, Name = "Technology", Description = "Technology and IT equipment", CreatedAt = new DateTime(2024, 1, 1) }
             );
         }
     }

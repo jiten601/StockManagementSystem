@@ -29,6 +29,5 @@ namespace StockManagementSystem.Models
         
         // Navigation property
         public virtual ApplicationUser User { get; set; } = null!;
-        public string UserName { get; set; }
     }
 } 

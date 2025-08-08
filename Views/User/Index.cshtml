@@ -171,11 +171,25 @@
                                         <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-warning" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        @if (user.Id != User.Identity.Name && user.Role != "Admin")
+                                        @if (user.Id != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && user.Role != "Admin")
                                         {
-                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('@user.Id', '@user.FullName')" title="Delete">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" title="Delete Options">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item" asp-action="Delete" asp-route-id="@user.Id">
+                                                            <i class="fas fa-exclamation-triangle me-2"></i>Delete with Confirmation
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <button type="button" class="dropdown-item" onclick="confirmDelete('@user.Id', '@user.FullName')">
+                                                            <i class="fas fa-trash me-2"></i>Quick Delete
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         }
                                     </div>
                                 </td>
@@ -229,7 +243,7 @@
     <script>
         function confirmDelete(id, name) {
             document.getElementById('userName').textContent = name;
-            document.getElementById('deleteForm').action = `/User/Delete/${id}`;
+            document.getElementById('deleteForm').action = `/User/DeleteConfirmed/${id}`;
             new bootstrap.Modal(document.getElementById('deleteModal')).show();
         }
     </script>

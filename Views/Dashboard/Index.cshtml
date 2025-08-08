@@ -176,7 +176,7 @@
                                         <small class="text-muted">@activity.Timestamp.ToString("MMM dd, HH:mm")</small>
                                     </div>
                                     <p class="mb-1 text-muted">@activity.Description</p>
-                                    <small class="text-primary">@activity.UserName</small>
+                                    <small class="text-primary">@activity.User?.FullName</small>
                                 </div>
                             </div>
                         }

@@ -175,6 +175,77 @@ namespace StockManagementSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Prevent deleting the current user
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (user.Id == currentUser!.Id)
+            {
+                TempData["Error"] = "You cannot delete your own account.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Prevent deleting admin users
+            if (user.Role == "Admin")
+            {
+                TempData["Error"] = "Admin users cannot be deleted.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Prevent deleting the current user
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (user.Id == currentUser!.Id)
+            {
+                TempData["Error"] = "You cannot delete your own account.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Prevent deleting admin users
+            if (user.Role == "Admin")
+            {
+                TempData["Error"] = "Admin users cannot be deleted.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var userName = user.FullName;
+            var result = await _userManager.DeleteAsync(user);
+            
+            if (result.Succeeded)
+            {
+                await _activityLogService.LogActivityAsync(
+                    currentUser.Id, "Delete", "User", null, 
+                    $"Deleted user: {userName}", 
+                    HttpContext.Connection.RemoteIpAddress?.ToString());
+
+                TempData["Success"] = $"User '{userName}' has been deleted successfully.";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to delete user. Please try again.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private bool UserExists(string id)
         {
             return _userManager.Users.Any(e => e.Id == id);
