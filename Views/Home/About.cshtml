@@ -1,0 +1,444 @@
+@{
+    ViewData["Title"] = "About Us";
+}
+
+<style>
+    .hero-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .feature-card {
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .icon-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .icon-circle::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+    }
+    
+    .feature-card:hover .icon-circle::before {
+        transform: translateX(100%);
+    }
+    
+
+    
+    .tech-stack-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    
+    .contact-card {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    
+    .floating-animation {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @@keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+    
+    @@keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    .gradient-text {
+        background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+        background-size: 400% 400%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradient-shift 3s ease infinite;
+    }
+    
+    @@keyframes gradient-shift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .section-divider {
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+        border-radius: 2px;
+        margin: 3rem 0;
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card hero-gradient text-white border-0" style="border-radius: 30px; overflow: hidden;">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <div class="floating-animation">
+                                <h1 class="display-3 fw-bold mb-4">
+                                    <i class="fas fa-boxes me-3 pulse-animation"></i>About StockMS
+                                </h1>
+                                <p class="lead mb-4 fs-4">
+                                    Revolutionizing inventory management with cutting-edge technology and intuitive design
+                                </p>
+                                <div class="d-flex flex-wrap gap-3 mb-4">
+                                    <span class="badge glass-effect fs-6 px-4 py-2">
+                                        <i class="fas fa-shield-alt me-2"></i>Enterprise Security
+                                    </span>
+                                    <span class="badge glass-effect fs-6 px-4 py-2">
+                                        <i class="fas fa-tachometer-alt me-2"></i>Lightning Fast
+                                    </span>
+                                    <span class="badge glass-effect fs-6 px-4 py-2">
+                                        <i class="fas fa-mobile-alt me-2"></i>Mobile First
+                                    </span>
+                                </div>
+                                <div class="d-flex gap-3">
+                                    <a href="#features" class="btn btn-light btn-lg px-4">
+                                        <i class="fas fa-rocket me-2"></i>Explore Features
+                                    </a>
+                                    <a href="#contact" class="btn btn-outline-light btn-lg px-4">
+                                        <i class="fas fa-envelope me-2"></i>Get in Touch
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 text-center">
+                            <div class="floating-animation">
+                                <div class="display-1 text-white-50 mb-4">
+                                    <i class="fas fa-chart-line pulse-animation"></i>
+                                </div>
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <div class="glass-effect rounded p-3">
+                                            <div class="h3 mb-1">∞</div>
+                                            <small>Items</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="glass-effect rounded p-3">
+                                            <div class="h3 mb-1">24/7</div>
+                                            <small>Support</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="glass-effect rounded p-3">
+                                            <div class="h3 mb-1">100%</div>
+                                            <small>Secure</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="row mb-5">
+        <div class="col-12 text-center mb-5">
+            <h2 class="gradient-text display-5 fw-bold mb-3">
+                <i class="fas fa-star me-3"></i>Powerful Features
+            </h2>
+            <p class="lead text-muted">Everything you need to manage your inventory efficiently</p>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card feature-card h-100 border-0" style="border-radius: 20px;">
+                <div class="card-body text-center p-5">
+                    <div class="icon-circle bg-primary text-white">
+                        <i class="fas fa-box fa-3x"></i>
+                    </div>
+                    <h4 class="card-title fw-bold mb-3">Smart Inventory Management</h4>
+                    <p class="card-text text-muted fs-6">
+                        Advanced stock tracking with real-time updates, intelligent categorization, and comprehensive item analytics.
+                    </p>
+                    <div class="mt-4">
+                        <span class="badge bg-primary me-2">Real-time Updates</span>
+                        <span class="badge bg-success me-2">Smart Alerts</span>
+                        <span class="badge bg-info">Analytics</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card feature-card h-100 border-0" style="border-radius: 20px;">
+                <div class="card-body text-center p-5">
+                    <div class="icon-circle bg-success text-white">
+                        <i class="fas fa-users fa-3x"></i>
+                    </div>
+                    <h4 class="card-title fw-bold mb-3">Role-Based Access Control</h4>
+                    <p class="card-text text-muted fs-6">
+                        Secure multi-user environment with granular permissions, activity logging, and team collaboration tools.
+                    </p>
+                    <div class="mt-4">
+                        <span class="badge bg-success me-2">Admin Roles</span>
+                        <span class="badge bg-warning me-2">Staff Access</span>
+                        <span class="badge bg-info">Audit Trail</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card feature-card h-100 border-0" style="border-radius: 20px;">
+                <div class="card-body text-center p-5">
+                    <div class="icon-circle bg-info text-white">
+                        <i class="fas fa-chart-bar fa-3x"></i>
+                    </div>
+                    <h4 class="card-title fw-bold mb-3">Advanced Analytics Dashboard</h4>
+                    <p class="card-text text-muted fs-6">
+                        Comprehensive insights with interactive charts, low stock alerts, and detailed reporting capabilities.
+                    </p>
+                    <div class="mt-4">
+                        <span class="badge bg-info me-2">Live Charts</span>
+                        <span class="badge bg-warning me-2">Stock Alerts</span>
+                        <span class="badge bg-primary">Reports</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Technology Stack Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card tech-stack-card border-0" style="border-radius: 30px;">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <h3 class="text-white fw-bold mb-4">
+                                <i class="fas fa-code me-3"></i>Cutting-Edge Technology
+                            </h3>
+                            <p class="text-white-75 mb-4 fs-5">
+                                Built with the latest technologies to ensure performance, security, and scalability
+                            </p>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="text-white-75 mb-3">Backend Stack</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-3">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong class="text-white">ASP.NET Core 9.0</strong>
+                                            <br><small class="text-white-75">Modern web framework</small>
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong class="text-white">Entity Framework Core</strong>
+                                            <br><small class="text-white-75">Advanced ORM</small>
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong class="text-white">SQL Server</strong>
+                                            <br><small class="text-white-75">Enterprise database</small>
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong class="text-white">ASP.NET Identity</strong>
+                                            <br><small class="text-white-75">Secure authentication</small>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="text-white-75 mb-3">Frontend Stack</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-3">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong class="text-white">Bootstrap 5</strong>
+                                            <br><small class="text-white-75">Responsive design</small>
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong class="text-white">Font Awesome</strong>
+                                            <br><small class="text-white-75">Icon library</small>
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong class="text-white">jQuery</strong>
+                                            <br><small class="text-white-75">JavaScript framework</small>
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="fas fa-check-circle text-success me-2"></i>
+                                            <strong class="text-white">Razor Views</strong>
+                                            <br><small class="text-white-75">Server-side rendering</small>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Contact Section -->
+    <div id="contact" class="row">
+        <div class="col-12">
+            <div class="card contact-card border-0" style="border-radius: 30px;">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <h3 class="text-white fw-bold mb-4">
+                                <i class="fas fa-envelope me-3"></i>Get in Touch
+                            </h3>
+                            <p class="text-white-75 mb-4 fs-5">
+                                Ready to transform your inventory management? Let's discuss how StockMS can help your business grow.
+                            </p>
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="text-white-75 mb-3">Contact Information</h6>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="glass-effect rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-envelope text-white"></i>
+                                        </div>
+                                        <div>
+                                            <strong class="text-white">support@stockms.com</strong>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="glass-effect rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-phone text-white"></i>
+                                        </div>
+                                        <div>
+                                            <strong class="text-white">+977 9814302810</strong>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="glass-effect rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-map-marker-alt text-white"></i>
+                                        </div>
+                                        <div>
+                                            <strong class="text-white">123 Business Street<br>Tech City, TC 12345</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="text-white-75 mb-3">Support Hours</h6>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="glass-effect rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-clock text-white"></i>
+                                        </div>
+                                        <div>
+                                            <strong class="text-white">Monday - Friday</strong><br>
+                                            <small class="text-white-75">9:00 AM - 6:00 PM</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="glass-effect rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-calendar text-white"></i>
+                                        </div>
+                                        <div>
+                                            <strong class="text-white">Saturday</strong><br>
+                                            <small class="text-white-75">10:00 AM - 4:00 PM</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="glass-effect rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-calendar-times text-white"></i>
+                                        </div>
+                                        <div>
+                                            <strong class="text-white">Sunday</strong><br>
+                                            <small class="text-white-75">Closed</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe all feature cards
+    document.querySelectorAll('.feature-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(50px)';
+        card.style.transition = 'all 0.6s ease';
+        observer.observe(card);
+    });
+</script>

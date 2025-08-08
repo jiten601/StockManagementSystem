@@ -96,24 +96,6 @@ namespace StockManagementSystem.Controllers
             return View(dashboard);
         }
 
-        public async Task<IActionResult> ActivityLogs(int page = 1)
-        {
-            int pageSize = 20;
-            var activities = await _context.ActivityLogs
-                .Include(a => a.User)
-                .OrderByDescending(a => a.Timestamp)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
 
-            var totalActivities = await _context.ActivityLogs.CountAsync();
-            var totalPages = (int)Math.Ceiling(totalActivities / (double)pageSize);
-
-            ViewBag.TotalPages = totalPages;
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalActivities = totalActivities;
-
-            return View(activities);
-        }
     }
 } 

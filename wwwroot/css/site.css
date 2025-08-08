@@ -117,6 +117,9 @@ body {
     background: white !important;
     border-bottom: 1px solid var(--border-color);
     padding: 0.75rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1100;
 }
 
 .navbar-brand {
@@ -422,4 +425,9 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary-color);
+}
+
+/* Ensure dropdowns appear above the fixed sidebar */
+.dropdown-menu {
+    z-index: 2000;
 }
