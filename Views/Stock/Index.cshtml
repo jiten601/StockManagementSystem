@@ -171,6 +171,10 @@
                                 <td>
                                     <div class="btn-group">
                                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="View"><i class="fas fa-eye"></i></a>
+                                        @if (item.Quantity > 0)
+                                        {
+                                            <a asp-action="Buy" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success" title="Buy"><i class="fas fa-shopping-cart"></i></a>
+                                        }
                                         @if (User.IsInRole("Admin"))
                                         {
                                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning" title="Edit"><i class="fas fa-edit"></i></a>

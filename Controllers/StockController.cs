@@ -100,6 +100,73 @@ namespace StockManagementSystem.Controllers
             return View(stockItem);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Buy(int id)
+        {
+            var item = await _context.StockItems.FirstOrDefaultAsync(s => s.Id == id && s.IsActive);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            var model = new BuyItemViewModel
+            {
+                StockItemId = item.Id,
+                ItemName = item.Name,
+                UnitPrice = item.Price,
+                AvailableQuantity = item.Quantity,
+                QuantityToBuy = 1
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Buy(BuyItemViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var item = await _context.StockItems.FirstOrDefaultAsync(s => s.Id == model.StockItemId);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            if (model.QuantityToBuy <= 0)
+            {
+                ModelState.AddModelError(nameof(model.QuantityToBuy), "Quantity must be at least 1.");
+                return View(model);
+            }
+
+            if (model.QuantityToBuy > item.Quantity)
+            {
+                ModelState.AddModelError(nameof(model.QuantityToBuy), "Quantity exceeds available stock.");
+                model.AvailableQuantity = item.Quantity;
+                model.ItemName = item.Name;
+                model.UnitPrice = item.Price;
+                return View(model);
+            }
+
+            // Decrease quantity
+            item.Quantity -= model.QuantityToBuy;
+            item.UpdatedAt = DateTime.Now;
+            var user = await _userManager.GetUserAsync(User);
+            item.UpdatedBy = user?.Id;
+            await _context.SaveChangesAsync();
+
+            await _activityLogService.LogActivityAsync(
+                user!.Id, "Buy", "StockItem", item.Id,
+                $"Bought {model.QuantityToBuy} x {item.Name} (remaining {item.Quantity})",
+                HttpContext.Connection.RemoteIpAddress?.ToString());
+
+            TempData["Success"] = $"You purchased {model.QuantityToBuy} unit(s) of {item.Name}.";
+            return RedirectToAction(nameof(Details), new { id = item.Id });
+        }
+
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Create()
         {
