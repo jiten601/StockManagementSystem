@@ -15,9 +15,15 @@
             <div class="d-flex gap-2">
                 @if (Model.Quantity > 0)
                 {
-                    <a asp-action="Buy" asp-route-id="@Model.Id" class="btn btn-success">
-                        <i class="fas fa-shopping-cart me-2"></i>Buy
-                    </a>
+                    <form asp-action="AddToCart" asp-controller="Stock" method="post">
+                        <input type="hidden" name="StockItemId" value="@Model.Id" />
+                        <div class="input-group">
+                            <input type="number" name="QuantityToBuy" class="form-control" value="1" min="1" max="@Model.Quantity" />
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                    </form>
                 }
                 @if (User.IsInRole("Admin"))
                 {

@@ -44,5 +44,6 @@ namespace StockManagementSystem.Models.ViewModels
         public string? CategoryName { get; set; }
         public string? CreatedByUserName { get; set; }
         public string? UpdatedByUserName { get; set; }
+        public string? CreatedByUserProfileImage { get; set; }
     }
 } 

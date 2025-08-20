@@ -223,7 +223,7 @@ body {
 
 .form-control:focus, .form-select:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+        background-color: rgba(79, 70, 229, 0.05);
 }
 
 .form-label {
@@ -430,4 +430,12 @@ body {
 /* Ensure dropdowns appear above the fixed sidebar */
 .dropdown-menu {
     z-index: 2000;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
 }

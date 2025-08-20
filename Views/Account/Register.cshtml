@@ -17,7 +17,7 @@
                         <p class="mb-0 opacity-75">Join our stock management system</p>
                     </div>
                     <div class="card-body p-4">
-                        <form asp-action="Register" method="post">
+                        <form asp-action="Register" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="returnUrl" value="@returnUrl" />
                             
                             <div class="row">
@@ -78,6 +78,24 @@
                                 <span asp-validation-for="Role" class="text-danger small"></span>
                             </div>
                             
+                            <div class="mb-3">
+                                <label asp-for="ProfileImage" class="form-label">
+                                    <i class="fas fa-camera me-2"></i>Profile Image
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="ProfileImage" type="file" class="form-control" accept="image/*" id="profileImage" />
+                                    <button class="btn btn-outline-secondary" type="button" id="previewImage">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="form-text">Upload a profile image (JPG, PNG, GIF). Max size: 5MB.</div>
+                                <span asp-validation-for="ProfileImage" class="text-danger small"></span>
+                            </div>
+                            
+                            <div class="mb-3" id="imagePreview" style="display: none;">
+                                <img id="preview" src="#" alt="Profile Image Preview" class="img-fluid rounded" style="max-height: 200px;" />
+                            </div>
+                            
                             <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
                                 <i class="fas fa-exclamation-triangle me-2"></i>
                                 <span asp-validation-summary="ModelOnly"></span>
@@ -136,5 +154,39 @@
         // Initialize password toggles
         togglePasswordVisibility('password', 'togglePassword');
         togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword');
+        
+        // Profile image preview
+        document.getElementById('profileImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('preview');
+            const imagePreview = document.getElementById('imagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
+        
+        // Preview button functionality
+        document.getElementById('previewImage').addEventListener('click', function() {
+            const fileInput = document.getElementById('profileImage');
+            const preview = document.getElementById('preview');
+            const imagePreview = document.getElementById('imagePreview');
+            
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        });
     </script>
 } 

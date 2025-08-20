@@ -1,0 +1,147 @@
+@model StockManagementSystem.Models.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark d-flex align-items-center">
+                    <i class="fas fa-edit me-2"></i>
+                    <h5 class="mb-0">Edit Profile</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
+                        <!-- Current Profile Image Display -->
+                        <div class="row mb-4">
+                            <div class="col-12 text-center">
+                                @if (!string.IsNullOrEmpty(Model.ProfileImage))
+                                {
+                                    <img src="@Model.ProfileImage" alt="Current Profile Image" class="rounded-circle img-thumbnail mb-3" style="width: 120px; height: 120px; object-fit: cover;" />
+                                    <p class="text-muted">Current Profile Image</p>
+                                }
+                                else
+                                {
+                                    <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-3" style="width: 120px; height: 120px;">
+                                        <i class="fas fa-user fa-3x text-white"></i>
+                                    </div>
+                                    <p class="text-muted">No profile image uploaded</p>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Profile Image Upload -->
+                        <div class="mb-3">
+                            <label asp-for="NewProfileImage" class="form-label">
+                                <i class="fas fa-camera me-2"></i>Upload New Profile Image
+                            </label>
+                            <div class="input-group">
+                                <input asp-for="NewProfileImage" type="file" class="form-control" accept="image/*" id="newProfileImage" />
+                                <button class="btn btn-outline-secondary" type="button" id="previewNewImage">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">Upload a new profile image (JPG, PNG, GIF). Max size: 5MB.</div>
+                            <span asp-validation-for="NewProfileImage" class="text-danger small"></span>
+                        </div>
+
+                        <!-- New Image Preview -->
+                        <div class="mb-3" id="newImagePreview" style="display: none;">
+                            <div class="text-center">
+                                <img id="newPreview" src="#" alt="New Profile Image Preview" class="img-fluid rounded" style="max-height: 200px;" />
+                                <p class="text-muted mt-2">New Image Preview</p>
+                            </div>
+                        </div>
+
+                        <!-- Other Profile Fields -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="FullName" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Full Name
+                                </label>
+                                <input asp-for="FullName" class="form-control" />
+                                <span asp-validation-for="FullName" class="text-danger small"></span>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>Email
+                                </label>
+                                <input class="form-control" value="@Model.Email" readonly />
+                                <small class="text-muted">Email cannot be changed</small>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="fas fa-user-tag me-2"></i>Role
+                                </label>
+                                <input class="form-control" value="@Model.Role" readonly />
+                                <small class="text-muted">Role cannot be changed</small>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar me-2"></i>Member Since
+                                </label>
+                                <input class="form-control" value="@Model.CreatedAt.ToString("MMM dd, yyyy")" readonly />
+                            </div>
+                        </div>
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mt-3" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span asp-validation-summary="ModelOnly"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a asp-action="Profile" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save me-2"></i>Update Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // New profile image preview
+        document.getElementById('newProfileImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('newPreview');
+            const imagePreview = document.getElementById('newImagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
+        
+        // Preview button functionality
+        document.getElementById('previewNewImage').addEventListener('click', function() {
+            const fileInput = document.getElementById('newProfileImage');
+            const preview = document.getElementById('newPreview');
+            const imagePreview = document.getElementById('newImagePreview');
+            
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        });
+    </script>
+}

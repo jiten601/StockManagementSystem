@@ -176,7 +176,19 @@
                                         <small class="text-muted">@activity.Timestamp.ToString("MMM dd, HH:mm")</small>
                                     </div>
                                     <p class="mb-1 text-muted">@activity.Description</p>
-                                    <small class="text-primary">@activity.User?.FullName</small>
+                                    <div class="d-flex align-items-center">
+                                        @if (!string.IsNullOrEmpty(activity.User?.ProfileImage))
+                                        {
+                                            <img src="@activity.User.ProfileImage" alt="Profile Image" class="rounded-circle me-2" style="width: 24px; height: 24px; object-fit: cover;" />
+                                        }
+                                        else
+                                        {
+                                            <div class="avatar-sm bg-primary text-white rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">
+                                                <i class="fas fa-user fa-xs"></i>
+                                            </div>
+                                        }
+                                        <small class="text-primary">@activity.User?.FullName</small>
+                                    </div>
                                 </div>
                             </div>
                         }
@@ -246,7 +258,21 @@
                                             </span>
                                         </td>
                                         <td>$@item.Price.ToString("N2")</td>
-                                        <td>@item.CreatedByUserName</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                @if (!string.IsNullOrEmpty(item.CreatedByUserProfileImage))
+                                                {
+                                                    <img src="@item.CreatedByUserProfileImage" alt="Profile Image" class="rounded-circle me-2" style="width: 24px; height: 24px; object-fit: cover;" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="avatar-sm bg-primary text-white rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">
+                                                        <i class="fas fa-user fa-xs"></i>
+                                                    </div>
+                                                }
+                                                <span>@item.CreatedByUserName</span>
+                                            </div>
+                                        </td>
                                         <td>@item.PurchaseDate.ToString("MMM dd")</td>
                                     </tr>
                                 }

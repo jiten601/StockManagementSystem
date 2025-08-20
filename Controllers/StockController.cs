@@ -100,34 +100,13 @@ namespace StockManagementSystem.Controllers
             return View(stockItem);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Buy(int id)
-        {
-            var item = await _context.StockItems.FirstOrDefaultAsync(s => s.Id == id && s.IsActive);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            var model = new BuyItemViewModel
-            {
-                StockItemId = item.Id,
-                ItemName = item.Name,
-                UnitPrice = item.Price,
-                AvailableQuantity = item.Quantity,
-                QuantityToBuy = 1
-            };
-
-            return View(model);
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Buy(BuyItemViewModel model)
+        public async Task<IActionResult> AddToCart(BuyItemViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return RedirectToAction(nameof(Details), new { id = model.StockItemId });
             }
 
             var item = await _context.StockItems.FirstOrDefaultAsync(s => s.Id == model.StockItemId);
@@ -138,32 +117,27 @@ namespace StockManagementSystem.Controllers
 
             if (model.QuantityToBuy <= 0)
             {
-                ModelState.AddModelError(nameof(model.QuantityToBuy), "Quantity must be at least 1.");
-                return View(model);
+                TempData["Error"] = "Quantity must be at least 1.";
+                return RedirectToAction(nameof(Details), new { id = model.StockItemId });
             }
 
             if (model.QuantityToBuy > item.Quantity)
             {
-                ModelState.AddModelError(nameof(model.QuantityToBuy), "Quantity exceeds available stock.");
-                model.AvailableQuantity = item.Quantity;
-                model.ItemName = item.Name;
-                model.UnitPrice = item.Price;
-                return View(model);
+                TempData["Error"] = "Quantity exceeds available stock.";
+                return RedirectToAction(nameof(Details), new { id = model.StockItemId });
             }
 
-            // Decrease quantity
-            item.Quantity -= model.QuantityToBuy;
-            item.UpdatedAt = DateTime.Now;
-            var user = await _userManager.GetUserAsync(User);
-            item.UpdatedBy = user?.Id;
-            await _context.SaveChangesAsync();
+            var cart = GetCart();
+            cart.AddItem(new Models.Cart.CartItem
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Quantity = model.QuantityToBuy,
+                Price = item.Price
+            });
+            SaveCart(cart);
 
-            await _activityLogService.LogActivityAsync(
-                user!.Id, "Buy", "StockItem", item.Id,
-                $"Bought {model.QuantityToBuy} x {item.Name} (remaining {item.Quantity})",
-                HttpContext.Connection.RemoteIpAddress?.ToString());
-
-            TempData["Success"] = $"You purchased {model.QuantityToBuy} unit(s) of {item.Name}.";
+            TempData["Success"] = $"{model.QuantityToBuy} unit(s) of {item.Name} added to cart.";
             return RedirectToAction(nameof(Details), new { id = item.Id });
         }
 
@@ -354,6 +328,24 @@ namespace StockManagementSystem.Controllers
 
             TempData["Success"] = "Stock item deleted successfully.";
             return RedirectToAction(nameof(Index));
+        }
+
+        private Models.Cart.ShoppingCart GetCart()
+        {
+            var cartJson = HttpContext.Session.GetString("Cart");
+            if (cartJson == null)
+            {
+                var cart = new Models.Cart.ShoppingCart();
+                SaveCart(cart);
+                return cart;
+            }
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Cart.ShoppingCart>(cartJson) ?? new Models.Cart.ShoppingCart();
+        }
+
+        private void SaveCart(Models.Cart.ShoppingCart cart)
+        {
+            var cartJson = Newtonsoft.Json.JsonConvert.SerializeObject(cart);
+            HttpContext.Session.SetString("Cart", cartJson);
         }
     }
 } 

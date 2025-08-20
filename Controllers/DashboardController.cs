@@ -66,7 +66,8 @@ namespace StockManagementSystem.Controllers
                     PurchaseDate = s.PurchaseDate,
                     Supplier = s.Supplier,
                     Description = s.Description,
-                    CreatedByUserName = s.CreatedByUser.FullName
+                    CreatedByUserName = s.CreatedByUser.FullName,
+                    CreatedByUserProfileImage = s.CreatedByUser.ProfileImage
                 })
                 .ToListAsync();
 

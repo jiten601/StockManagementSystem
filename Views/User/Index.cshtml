@@ -114,9 +114,16 @@
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar-sm bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center">
-                                            <i class="fas fa-user"></i>
-                                        </div>
+                                        @if (!string.IsNullOrEmpty(user.ProfileImage))
+                                        {
+                                            <img src="@user.ProfileImage" alt="Profile Image" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;" />
+                                        }
+                                        else
+                                        {
+                                            <div class="avatar-sm bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                        }
                                         <div>
                                             <div class="fw-semibold">@user.FullName</div>
                                         </div>

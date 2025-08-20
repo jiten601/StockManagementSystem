@@ -9,5 +9,6 @@ namespace StockManagementSystem.Models
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? LastLoginAt { get; set; }
+        public string? ProfileImage { get; set; } // Path to profile image
     }
 } 

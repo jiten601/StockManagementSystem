@@ -27,5 +27,8 @@ namespace StockManagementSystem.Models.ViewModels
         [Required]
         [Display(Name = "Role")]
         public string Role { get; set; } = "Staff";
+
+        [Display(Name = "Profile Image")]
+        public IFormFile? ProfileImage { get; set; }
     }
 } 

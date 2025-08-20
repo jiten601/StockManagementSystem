@@ -21,6 +21,12 @@ namespace StockManagementSystem.Models.ViewModels
 
         [Display(Name = "Last Login")]
         public DateTime? LastLoginAt { get; set; }
+
+        [Display(Name = "Profile Image")]
+        public string? ProfileImage { get; set; }
+
+        [Display(Name = "New Profile Image")]
+        public IFormFile? NewProfileImage { get; set; }
     }
 }
 

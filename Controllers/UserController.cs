@@ -40,6 +40,7 @@ namespace StockManagementSystem.Controllers
                     user.IsActive,
                     user.CreatedAt,
                     user.LastLoginAt,
+                    user.ProfileImage,
                     Roles = string.Join(", ", roles)
                 });
             }
