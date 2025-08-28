@@ -3,6 +3,18 @@
     var returnUrl = ViewData["ReturnUrl"] as string;
 }
 
+<!-- Debug Info -->
+@if (Context.Request.Query.ContainsKey("debug"))
+{
+    <div class="alert alert-info">
+        <strong>Debug Info:</strong><br>
+        ReturnUrl: @returnUrl<br>
+        View Path: @ViewContext.View.Path<br>
+        Controller: @ViewContext.RouteData.Values["controller"]<br>
+        Action: @ViewContext.RouteData.Values["action"]
+    </div>
+}
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -38,6 +50,10 @@
                             <i class="fas fa-sign-in-alt me-2"></i>
                             Login with Different Account
                         </a>
+                        <a href="@Url.Action("AccessDenied", "Account", new { returnUrl = returnUrl, debug = "true" })" class="btn btn-outline-info">
+                            <i class="fas fa-bug me-2"></i>
+                            Debug Info
+                        </a>
                     </div>
                 </div>
             </div>
@@ -47,7 +63,8 @@
 
 @section Scripts {
     <script>
-        // Add any additional JavaScript if needed
-        console.log("Access denied page loaded");
+        console.log("Access denied page loaded successfully");
+        console.log("ReturnUrl: @returnUrl");
+        console.log("View loaded at: " + new Date().toISOString());
     </script>
 } 

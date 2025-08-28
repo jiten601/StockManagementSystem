@@ -310,10 +310,71 @@ namespace StockManagementSystem.Controllers
         }
 
         [HttpGet]
+        public IActionResult TestAccessDenied()
+        {
+            // Test action to verify AccessDenied functionality
+            return RedirectToAction("AccessDenied", new { returnUrl = "/Test" });
+        }
+
+        [HttpGet]
         public IActionResult AccessDenied(string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            
+            // Log the access denied attempt
+            try
+            {
+                var user = User.Identity?.IsAuthenticated == true ? User.Identity.Name : "Anonymous";
+                var requestedUrl = returnUrl ?? Request.Headers["Referer"].ToString();
+                
+                // You can add logging here if needed
+                // await _activityLogService.LogActivityAsync(userId, "Access Denied", "System", null, $"Access denied to: {requestedUrl}");
+            }
+            catch
+            {
+                // Ignore logging errors
+            }
+            
+            // Try to return the view with explicit path
+            try
+            {
+                // Try multiple view paths to ensure it's found
+                if (System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "Views", "Account", "AccessDenied.cshtml")))
+                {
+                    return View("AccessDenied");
+                }
+                else
+                {
+                    // Fallback to default view location
+                    return View();
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                // If view not found, return a simple error message
+                return Content(@"
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Access Denied</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                            .error { color: #d32f2f; font-size: 24px; margin-bottom: 20px; }
+                            .message { color: #666; margin-bottom: 30px; }
+                            .btn { display: inline-block; padding: 10px 20px; margin: 5px; text-decoration: none; border-radius: 5px; }
+                            .btn-primary { background: #1976d2; color: white; }
+                            .btn-secondary { background: #666; color: white; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class='error'>🚫 Access Denied</div>
+                        <div class='message'>You don't have permission to access this resource.</div>
+                        <div style='margin-bottom: 20px; font-size: 12px; color: #999;'>View Error: " + ex.Message + @"</div>
+                        <a href='/Home' class='btn btn-secondary'>Go to Home</a>
+                        <a href='/Account/Login' class='btn btn-primary'>Login</a>
+                    </body>
+                    </html>", "text/html");
+            }
         }
 
         [HttpGet]
